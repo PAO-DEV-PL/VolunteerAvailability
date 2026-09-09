@@ -11,34 +11,38 @@
     </head>
 
     <body>
-
-        <h1>Volunteer Availability</h1>
-        
-    <label for="name">Imię:</label>
+    
+    <div id="languageSwitcher">
+        <button type="button" id="plButton">🇵🇱</button>
+        <button type="button" id="enButton">🇬🇧</button>
+    </div>
+            
+    <h1 id="pageTitle"></h1>
+    
+    <label for="name" id="firstNameLabel"></label>
     <input type="text" id="name">
-
-    <label for="surname">Nazwisko:</label>
+    
+    <label for="surname" id="lastNameLabel"></label>
     <input type="text" id="surname">
-
-        <p>Doświadczenie wolontariackie:</p>
-
+    
+    <p id="experienceLabel"></p>
+    
     <label>
         <input type="radio" name="experience" value="none">
-        Nie mam doświadczenia
+        <span id="noExperience"></span>
     </label>
-
+    
     <label>
         <input type="radio" name="experience" value="other">
-        Pracowałem przy innych wydarzeniach
+        <span id="otherEvents"></span>
     </label>
-
+    
     <label>
         <input type="radio" name="experience" value="this">
-        Pracowałem już na tym wydarzeniu
+        <span id="thisEvent"></span>
     </label>
-
-    <div id="availability"></div>
     
+    <div id="availability"></div>    
     <script>
         const translations = {
             pl: {
@@ -83,7 +87,7 @@
             ]
         };
         
-        const currentLanguage = "pl";
+        let currentLanguage = "pl";
         
         const availability = document.getElementById("availability");
         
@@ -116,7 +120,17 @@
     }
     
     updateLanguage();
+
+    document.getElementById("plButton").addEventListener("click", function () {
+        currentLanguage = "pl";
+        updateLanguage();
+    });
     
+    document.getElementById("enButton").addEventListener("click", function () {
+        currentLanguage = "en";
+        updateLanguage();
+    });
+        
     </script>
     
     

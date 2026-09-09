@@ -46,6 +46,7 @@
     <script>
         const translations = {
             pl: {
+                locale: "pl-PL",
                 pageTitle: "Formularz wolontariusza",
                 firstName: "Imię:",
                 lastName: "Nazwisko:",
@@ -57,6 +58,7 @@
             },
         
             en: {
+                locale: "en-GB",
                 pageTitle: "Volunteer Form",
                 firstName: "First name:",
                 lastName: "Last name:",
@@ -74,13 +76,11 @@
             days: [
                 {
                     date: "2026-09-12",
-                    name: "Sobota",
                     start: "08:00",
                     end: "20:00"
                 },
                 {
                     date: "2026-09-13",
-                    name: "Niedziela",
                     start: "08:00",
                     end: "18:00"
                 }
@@ -88,25 +88,69 @@
         };
         
         let currentLanguage = "pl";
-        
+        const availabilityState = {};
         const availability = document.getElementById("availability");
+        function renderAvailabilityTable() {
+            availability.innerHTML = "";
         
-        const table = document.createElement("table");
-        availability.appendChild(table);
+            const table = document.createElement("table");
+            availability.appendChild(table);
         
-        const headerRow = document.createElement("tr");
-        table.appendChild(headerRow);
+            const headerRow = document.createElement("tr");
+            table.appendChild(headerRow);
         
-        const timeHeader = document.createElement("th");
-        timeHeader.textContent = translations[currentLanguage].time;
-        headerRow.appendChild(timeHeader);
+            const timeHeader = document.createElement("th");
+            timeHeader.textContent = translations[currentLanguage].time;
+            headerRow.appendChild(timeHeader);
         
-        for (const day of eventStructure.days) {
-            const dayHeader = document.createElement("th");
-            dayHeader.textContent = day.name;
-            headerRow.appendChild(dayHeader);
+            for (const day of eventStructure.days) {
+                const dayHeader = document.createElement("th");
+        
+                const date = new Date(day.date + "T00:00:00");
+        
+                const dayName = new Intl.DateTimeFormat(
+                    translations[currentLanguage].locale,
+                    { weekday: "long" }
+                ).format(date);
+        
+                dayHeader.textContent = dayName;
+                headerRow.appendChild(dayHeader);
+            }
+        
+            const firstDay = eventStructure.days[0];
+        
+            const [startHour, startMinute] = firstDay.start.split(":").map(Number);
+            const [endHour, endMinute] = firstDay.end.split(":").map(Number);
+        
+            let currentMinutes = startHour * 60 + startMinute;
+            const endMinutes = endHour * 60 + endMinute;
+        
+            while (currentMinutes < endMinutes) {
+                const row = document.createElement("tr");
+                table.appendChild(row);
+        
+                const hourCell = document.createElement("td");
+        
+                const hours = Math.floor(currentMinutes / 60);
+                const minutes = currentMinutes % 60;
+        
+                const formattedTime =
+                    String(hours).padStart(2, "0") +
+                    ":" +
+                    String(minutes).padStart(2, "0");
+        
+                hourCell.textContent = formattedTime;
+                row.appendChild(hourCell);
+        
+                for (const day of eventStructure.days) {
+                    const cell = document.createElement("td");
+                    row.appendChild(cell);
+                }
+        
+                currentMinutes += eventStructure.shiftLength;
+            }
         }
-    
+        
     function updateLanguage() {
         const language = translations[currentLanguage];
     
@@ -117,10 +161,12 @@
         document.getElementById("noExperience").textContent = language.noExperience;
         document.getElementById("otherEvents").textContent = language.otherEvents;
         document.getElementById("thisEvent").textContent = language.thisEvent;
+
     }
     
     updateLanguage();
-
+    renderAvailabilityTable();
+        
     document.getElementById("plButton").addEventListener("click", function () {
         currentLanguage = "pl";
         updateLanguage();

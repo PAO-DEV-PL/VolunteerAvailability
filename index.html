@@ -40,6 +40,30 @@
     <div id="availability"></div>
     
     <script>
+        const translations = {
+            pl: {
+                pageTitle: "Formularz wolontariusza",
+                firstName: "Imię:",
+                lastName: "Nazwisko:",
+                experience: "Doświadczenie wolontariackie:",
+                noExperience: "Nie mam doświadczenia",
+                otherEvents: "Pracowałem przy innych wydarzeniach",
+                thisEvent: "Pracowałem już na tym wydarzeniu",
+                time: "Godzina:"
+            },
+        
+            en: {
+                pageTitle: "Volunteer Form",
+                firstName: "First name:",
+                lastName: "Last name:",
+                experience: "Volunteer experience:",
+                noExperience: "No experience",
+                otherEvents: "I worked at other events",
+                thisEvent: "I have already worked at this event",
+                time: "Time:"
+            }
+        };
+        
         const eventStructure = {
             shiftLength: 60,
         
@@ -59,6 +83,8 @@
             ]
         };
         
+        const currentLanguage = "pl";
+        
         const availability = document.getElementById("availability");
         
         const table = document.createElement("table");
@@ -68,7 +94,7 @@
         table.appendChild(headerRow);
         
         const timeHeader = document.createElement("th");
-        timeHeader.textContent = "Godzina";
+        timeHeader.textContent = translations[currentLanguage].time;
         headerRow.appendChild(timeHeader);
         
         for (const day of eventStructure.days) {

@@ -100,6 +100,7 @@
             table.appendChild(headerRow);
         
             const timeHeader = document.createElement("th");
+            timeHeader.id = "time-header";
             timeHeader.textContent = translations[currentLanguage].time;
             headerRow.appendChild(timeHeader);
         
@@ -163,6 +164,7 @@
         document.getElementById("otherEvents").textContent = language.otherEvents;
         document.getElementById("thisEvent").textContent = language.thisEvent;
 
+        document.getElementById("time-header").textContent = language.time;
         for (const day of eventStructure.days) {
             const date = new Date(day.date + "T00:00:00");
         

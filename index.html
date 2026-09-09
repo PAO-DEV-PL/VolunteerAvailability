@@ -102,6 +102,21 @@
             dayHeader.textContent = day.name;
             headerRow.appendChild(dayHeader);
         }
+    
+    function updateLanguage() {
+        const language = translations[currentLanguage];
+    
+        document.getElementById("pageTitle").textContent = language.pageTitle;
+        document.getElementById("firstNameLabel").textContent = language.firstName;
+        document.getElementById("lastNameLabel").textContent = language.lastName;
+        document.getElementById("experienceLabel").textContent = language.experience;
+        document.getElementById("noExperience").textContent = language.noExperience;
+        document.getElementById("otherEvents").textContent = language.otherEvents;
+        document.getElementById("thisEvent").textContent = language.thisEvent;
+    }
+    
+    updateLanguage();
+    
     </script>
     
     

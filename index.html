@@ -105,6 +105,7 @@
         
             for (const day of eventStructure.days) {
                 const dayHeader = document.createElement("th");
+                dayHeader.id = `day-${day.date}`;
         
                 const date = new Date(day.date + "T00:00:00");
         
@@ -162,6 +163,16 @@
         document.getElementById("otherEvents").textContent = language.otherEvents;
         document.getElementById("thisEvent").textContent = language.thisEvent;
 
+        for (const day of eventStructure.days) {
+            const date = new Date(day.date + "T00:00:00");
+        
+            const dayName = new Intl.DateTimeFormat(
+                translations[currentLanguage].locale,
+                { weekday: "long" }
+            ).format(date);
+        
+            document.getElementById(`day-${day.date}`).textContent = dayName;
+        }
     }
     
     updateLanguage();

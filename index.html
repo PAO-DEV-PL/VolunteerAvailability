@@ -28,7 +28,7 @@
     <p id="experienceLabel"></p>
     
     <label>
-        <input type="radio" name="experience" value="none">
+        <input type="radio" name="experience" value="none" checked>
         <span id="noExperience"></span>
     </label>
     
@@ -222,32 +222,56 @@
             }
         }
         
-    function updateLanguage() {
-        const language = translations[currentLanguage];
+        function getDayAvailability(dayDate) {
+            return availabilityState[dayDate] ?? {};
+        }
 
-        document.getElementById("pageTitle").textContent = language.pageTitle;
-        document.getElementById("firstNameLabel").textContent = language.firstName;
-        document.getElementById("lastNameLabel").textContent = language.lastName;
-        document.getElementById("experienceLabel").textContent = language.experience;
-        document.getElementById("noExperience").textContent = language.noExperience;
-        document.getElementById("otherEvents").textContent = language.otherEvents;
-        document.getElementById("thisEvent").textContent = language.thisEvent;
+        function collectFormData() {
+            const firstName = document.getElementById("name").value.trim();
+            const lastName = document.getElementById("surname").value.trim();
 
+            const experienceInput = document.querySelector(
+                'input[name="experience"]:checked'
+            );
+
+            const experience = experienceInput
+                ? experienceInput.value
+                : "";
+
+            return {
+                firstName: firstName,
+                lastName: lastName,
+                experience: experience,
+                availability: availabilityState
+            };
+        }
+
+        function updateLanguage() {
+            const language = translations[currentLanguage];
+
+            document.getElementById("pageTitle").textContent = language.pageTitle;
+            document.getElementById("firstNameLabel").textContent = language.firstName;
+            document.getElementById("lastNameLabel").textContent = language.lastName;
+            document.getElementById("experienceLabel").textContent = language.experience;
+            document.getElementById("noExperience").textContent = language.noExperience;
+            document.getElementById("otherEvents").textContent = language.otherEvents;
+            document.getElementById("thisEvent").textContent = language.thisEvent;
+
+            renderAvailabilityTable();
+        }
+        
         renderAvailabilityTable();
-    }
-    
-    renderAvailabilityTable();
-    updateLanguage();
-
-    document.getElementById("plButton").addEventListener("click", function () {
-        currentLanguage = "pl";
         updateLanguage();
-    });
 
-    document.getElementById("enButton").addEventListener("click", function () {
-        currentLanguage = "en";
-        updateLanguage();
-    });
+        document.getElementById("plButton").addEventListener("click", function () {
+            currentLanguage = "pl";
+            updateLanguage();
+        });
+
+        document.getElementById("enButton").addEventListener("click", function () {
+            currentLanguage = "en";
+            updateLanguage();
+        });
         
     </script>
     

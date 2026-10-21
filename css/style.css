@@ -6,7 +6,7 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 24px;
-    background-color: #ff33a3;
+    background-color: #ff3fa3;
     color: #222222;
 }
 
@@ -46,4 +46,21 @@ label {
 
 #submitButton:hover {
     background-color: #1d4ed8;
+}
+
+.name-fields {
+    display: flex;
+    gap: 20px;
+}
+
+.field-group {
+    flex: 1;
+    min-width: 0;
+}
+
+@media (max-width: 400px) {
+    .name-fields {
+        flex-direction: column;
+        gap: 0;
+    }
 }

@@ -91,6 +91,30 @@
         const availabilityState = {};
         let activeDay = eventStructure.days[0].date;
         const availability = document.getElementById("availability");
+
+        function cycleAvailability(dayDate, time) {
+            if (!availabilityState[dayDate]) {
+                availabilityState[dayDate] = {};
+            }
+
+            if (availabilityState[dayDate][time] === undefined) {
+                availabilityState[dayDate][time] = 0;
+            }
+
+            const currentValue = availabilityState[dayDate][time];
+
+            const nextValue = {
+                0: 1,
+                1: 10,
+                10: -1,
+                "-1": 0
+            };
+
+            availabilityState[dayDate][time] = nextValue[currentValue];
+
+            renderAvailabilityTable();
+        }
+
         function renderAvailabilityTable() {
             availability.innerHTML = "";
 
@@ -168,6 +192,30 @@
                 row.appendChild(hourCell);
 
                 const cell = document.createElement("td");
+
+                const time = formattedTime;
+
+                if (!availabilityState[selectedDay.date]) {
+                    availabilityState[selectedDay.date] = {};
+                }
+
+                const value = availabilityState[selectedDay.date][time] ?? 0;
+
+                const symbols = {
+                    0: "—",
+                    1: "✓",
+                    10: "★",
+                    "-1": "✕"
+                };
+
+                cell.textContent = symbols[value];
+
+                cell.style.cursor = "pointer";
+
+                cell.addEventListener("click", function () {
+                    cycleAvailability(selectedDay.date, time);
+                });
+
                 row.appendChild(cell);
 
                 currentMinutes += eventStructure.shiftLength;

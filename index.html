@@ -72,7 +72,7 @@
         
         const eventStructure = {
             shiftLength: 60,
-        
+
             days: [
                 {
                     date: "2026-09-12",
@@ -81,7 +81,7 @@
                 },
                 {
                     date: "2026-09-13",
-                    start: "08:00",
+                    start: "10:00",
                     end: "18:00"
                 }
             ]
@@ -89,73 +89,94 @@
         
         let currentLanguage = "pl";
         const availabilityState = {};
+        let activeDay = eventStructure.days[0].date;
         const availability = document.getElementById("availability");
         function renderAvailabilityTable() {
             availability.innerHTML = "";
-        
+
+            const tabs = document.createElement("div");
+            tabs.id = "dayTabs";
+            availability.appendChild(tabs);
+
+            for (const day of eventStructure.days) {
+                const tab = document.createElement("button");
+
+                tab.type = "button";
+                tab.id = `tab-${day.date}`;
+
+                const date = new Date(day.date + "T00:00:00");
+
+                const dayName = new Intl.DateTimeFormat(
+                    translations[currentLanguage].locale,
+                    { weekday: "short" }
+                ).format(date);
+
+                const formattedDate = new Intl.DateTimeFormat(
+                    translations[currentLanguage].locale,
+                    {
+                        day: "2-digit",
+                        month: "2-digit"
+                    }
+                ).format(date);
+
+                tab.textContent = `${dayName} ${formattedDate}`;
+
+                tabs.appendChild(tab);
+
+                tab.addEventListener("click", function () {
+                    activeDay = day.date;
+                    renderAvailabilityTable();
+                });
+            }
+
+            const selectedDay = eventStructure.days.find(function (day) {
+                return day.date === activeDay;
+            });
+
             const table = document.createElement("table");
             availability.appendChild(table);
-        
+
             const headerRow = document.createElement("tr");
             table.appendChild(headerRow);
-        
+
             const timeHeader = document.createElement("th");
             timeHeader.id = "time-header";
             timeHeader.textContent = translations[currentLanguage].time;
             headerRow.appendChild(timeHeader);
-        
-            for (const day of eventStructure.days) {
-                const dayHeader = document.createElement("th");
-                dayHeader.id = `day-${day.date}`;
-        
-                const date = new Date(day.date + "T00:00:00");
-        
-                const dayName = new Intl.DateTimeFormat(
-                    translations[currentLanguage].locale,
-                    { weekday: "long" }
-                ).format(date);
-        
-                dayHeader.textContent = dayName;
-                headerRow.appendChild(dayHeader);
-            }
-        
-            const firstDay = eventStructure.days[0];
-        
-            const [startHour, startMinute] = firstDay.start.split(":").map(Number);
-            const [endHour, endMinute] = firstDay.end.split(":").map(Number);
-        
+
+            const [startHour, startMinute] = selectedDay.start.split(":").map(Number);
+            const [endHour, endMinute] = selectedDay.end.split(":").map(Number);
+
             let currentMinutes = startHour * 60 + startMinute;
             const endMinutes = endHour * 60 + endMinute;
-        
+
             while (currentMinutes < endMinutes) {
                 const row = document.createElement("tr");
                 table.appendChild(row);
-        
+
                 const hourCell = document.createElement("td");
-        
+
                 const hours = Math.floor(currentMinutes / 60);
                 const minutes = currentMinutes % 60;
-        
+
                 const formattedTime =
                     String(hours).padStart(2, "0") +
                     ":" +
                     String(minutes).padStart(2, "0");
-        
+
                 hourCell.textContent = formattedTime;
                 row.appendChild(hourCell);
-        
-                for (const day of eventStructure.days) {
-                    const cell = document.createElement("td");
-                    row.appendChild(cell);
-                }
-        
+
+                const cell = document.createElement("td");
+                row.appendChild(cell);
+
                 currentMinutes += eventStructure.shiftLength;
             }
         }
         
     function updateLanguage() {
         const language = translations[currentLanguage];
-    
+
         document.getElementById("pageTitle").textContent = language.pageTitle;
         document.getElementById("firstNameLabel").textContent = language.firstName;
         document.getElementById("lastNameLabel").textContent = language.lastName;
@@ -164,27 +185,17 @@
         document.getElementById("otherEvents").textContent = language.otherEvents;
         document.getElementById("thisEvent").textContent = language.thisEvent;
 
-        document.getElementById("time-header").textContent = language.time;
-        for (const day of eventStructure.days) {
-            const date = new Date(day.date + "T00:00:00");
-        
-            const dayName = new Intl.DateTimeFormat(
-                translations[currentLanguage].locale,
-                { weekday: "long" }
-            ).format(date);
-        
-            document.getElementById(`day-${day.date}`).textContent = dayName;
-        }
+        renderAvailabilityTable();
     }
     
     renderAvailabilityTable();
     updateLanguage();
-        
+
     document.getElementById("plButton").addEventListener("click", function () {
         currentLanguage = "pl";
         updateLanguage();
     });
-    
+
     document.getElementById("enButton").addEventListener("click", function () {
         currentLanguage = "en";
         updateLanguage();

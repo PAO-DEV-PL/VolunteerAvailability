@@ -194,7 +194,6 @@ function updateLanguage() {
     renderAvailabilityTable();
 }
 
-renderAvailabilityTable();
 updateLanguage();
 
 document.getElementById("plButton").addEventListener("click", function () {
